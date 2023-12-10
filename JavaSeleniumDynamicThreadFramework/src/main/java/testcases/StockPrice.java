@@ -3,62 +3,66 @@ package testcases;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
-import utils.DatabaseReader;
 import mainpackage.TestRunner;
-import base.BasePage; 
+import base.BasePage;
+import database.DatabaseReader;
 
+/**
+ * StockPrice is a class designed to interact with web pages for the purpose of fetching stock price information.
+ * It uses Selenium WebDriver for web page interaction and BasePage for common web operations.
+ */
 public class StockPrice {
-	
-	DatabaseReader reader=TestRunner.getDatabaseReader();
-    BasePage basePage;  // Declare BasePage instance
     
+    // DatabaseReader instance for accessing test case data
+    DatabaseReader reader = TestRunner.getDatabaseReader();
+    // BasePage instance for common web operations
+    BasePage basePage;
+
+    /**
+     * Constructor to initialize the StockPrice with a WebDriver instance.
+     * @param driver The WebDriver instance used for web interactions.
+     */
     public StockPrice(WebDriver driver) {
         basePage = new BasePage(driver);  // Initialize BasePage instance
     }
-	
-    public boolean stockPriceSearch(WebDriver driver, String testCaseName) throws InterruptedException {
-    	driver.manage().window().maximize();
-        basePage.navigateToUrl("https://www.google.com");  // Using BasePage method
-        Thread.sleep(5000);
 
-        // Using BasePage method to send keys
-        String stockName = this.reader.getValue("TestData", testCaseName, "stockname")+ " Stock Price";
+    /**
+     * Performs a search on Google for a given stock's price and updates the value in the database.
+     * It navigates to Google, enters the stock name into the search box, and submits the search.
+     * Then, it retrieves the stock price information from the search results and updates it in the database.
+     *
+     * @param driver The WebDriver instance used for web interactions.
+     * @param testCaseName The name of the test case which contains the stock name information.
+     * @return true if the operation is completed successfully.
+     * @throws InterruptedException If the thread is interrupted while waiting.
+     */
+    public boolean stockPriceSearch(WebDriver driver, String testCaseName) throws InterruptedException {
+        driver.manage().window().maximize();
+        basePage.navigateToUrl("https://www.google.com");  // Navigate to Google
+
+        // Prepare and send the search query
+        String stockName = this.reader.getValue("TestData", testCaseName, "stockname") + " Stock Price";
         By searchBoxLocator = By.name("q");
-        basePage.sendKeys(searchBoxLocator, stockName);  
+        basePage.sendKeys(searchBoxLocator, stockName);
         Thread.sleep(3000);
 
-        // Submitting the form using BasePage
-        
-        basePage.pressEnter(searchBoxLocator); 
+        // Submit the search query
+        basePage.pressEnter(searchBoxLocator);
         Thread.sleep(5000);
-        
 
+        // Extract stock price information from the search results
         WebElement table = driver.findElement(By.className("CYGKSb"));
-
-        // Locate the rows within the table
         java.util.List<WebElement> rows = table.findElements(By.tagName("tr"));
-
-        // Loop through the rows to find and print the "Open," "High," and "Low" prices
         for (WebElement row : rows) {
-            // Locate the cells within each row
             java.util.List<WebElement> cells = row.findElements(By.tagName("td"));
-
-            // Check if the row contains data
             if (cells.size() == 2) {
-                // Extract the text content of the first cell (label)
-                String label = cells.get(0).getText()+"Price";
-
-                // Extract the text content of the second cell (value)
+                String label = cells.get(0).getText() + "Price";
                 String value = cells.get(1).getText().replace(",", "");
-
-                // Print the label and value
                 this.reader.updateValue("TestData", testCaseName, label, value);
                 Thread.sleep(2000);
             }
         }
-        
+
         return true;
     }
-
 }

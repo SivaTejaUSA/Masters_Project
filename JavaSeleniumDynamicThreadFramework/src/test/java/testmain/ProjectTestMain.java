@@ -8,9 +8,20 @@ import performancerequirementtesting.PerformanceTestCase;
 import testcases.StockPrice;
 import whiteboxtesting.WhiteBoxTestCase;
 
+/**
+ * ProjectTestMain is the main class for executing various test cases for a web application.
+ * It combines different types of test cases including black box, business requirement,
+ * performance, and white box testing.
+ */
+public class ProjectTestMain {
 
- public class ProjectTestMain {
-
+    /**
+     * Main method to execute various test cases.
+     * It initializes WebDriver, executes different types of test cases, and prints the test results.
+     * The method demonstrates the use of different test methodologies in a project context.
+     * 
+     * @param args Command-line arguments (not used in this implementation).
+     */
     public static void main(String[] args) {
         // Initialize WebDriver
         WebDriver driver = WebDriverManager.getDriver();
@@ -18,7 +29,7 @@ import whiteboxtesting.WhiteBoxTestCase;
         
         // Test case: Verify URL after Search
         try {
-        	stockPrice.stockPriceSearch(driver, "TestCase1");
+            stockPrice.stockPriceSearch(driver, "TestCase1");
             boolean isUrlCorrect = BlackBoxTestCase.verifyUrlContainsStockName(driver, "Apple");
             System.out.println("Test 1: Verify URL after search: " + (isUrlCorrect ? "Passed" : "Failed"));
         } catch (InterruptedException e) {
@@ -42,4 +53,3 @@ import whiteboxtesting.WhiteBoxTestCase;
     }    
 
 }
-
