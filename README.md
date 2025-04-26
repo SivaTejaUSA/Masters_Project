@@ -1,4 +1,4 @@
-# Project
+# Masters_Project
 The "Optimizing Java Selenium Framework with Automated Test Distribution and Full Resource Utilization"
 
 I have attached project documentation, Video presentation for quick understanding of the project. please download them and play.
